@@ -1,0 +1,21 @@
+const $=(s,root=document)=>root.querySelector(s), $$=(s,root=document)=>[...root.querySelectorAll(s)];
+// Theme preference
+const savedTheme=localStorage.getItem('ss-theme'); if(savedTheme) document.documentElement.dataset.theme=savedTheme;
+$('#themeToggle')?.addEventListener('click',()=>{const next=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=next;localStorage.setItem('ss-theme',next);$('#themeToggle').textContent=next==='dark'?'☼':'◐'});
+if($('#themeToggle')) $('#themeToggle').textContent=document.documentElement.dataset.theme==='dark'?'☼':'◐';
+// Mobile navigation
+$('.menu-toggle')?.addEventListener('click',()=>$('.nav')?.classList.toggle('open'));
+$$('.nav a').forEach(a=>a.addEventListener('click',()=>$('.nav')?.classList.remove('open')));
+// Reveal on scroll
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:.12});$$('.reveal').forEach(el=>observer.observe(el));
+// Menu filtering
+$$('.tab').forEach(tab=>tab.addEventListener('click',()=>{ $$('.tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');const category=tab.dataset.category;$$('.menu-item').forEach(item=>item.hidden=category!=='all'&&item.dataset.category!==category)}));
+// Dish details
+const dishes={"Roasted Tomato Burrata":{price:"৳ 780",desc:"Slow-roasted heirloom tomatoes, creamy burrata, basil oil and toasted sourdough. A bright, generous start to the table.",img:"https://images.unsplash.com/photo-1608039829572-78524f79c4c7?auto=format&fit=crop&w=1000&q=85"},"Herb Butter Chicken":{price:"৳ 1,180",desc:"Tender roast chicken finished with herb butter, seasonal vegetables and a silky pan jus.",img:"https://images.unsplash.com/photo-1532550907401-a500c9a57435?auto=format&fit=crop&w=1000&q=85"},"Wild Mushroom Risotto":{price:"৳ 980",desc:"Creamy arborio rice, wild mushrooms, parmesan and a touch of truffle. Comforting, earthy and deeply savoury.",img:"https://images.unsplash.com/photo-1476124369491-e7addf5db371?auto=format&fit=crop&w=1000&q=85"},"Citrus Prawn Linguine":{price:"৳ 1,250",desc:"Linguine tossed with prawns, garlic, lemon zest, parsley and a delicate chilli oil.",img:"https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=1000&q=85"},"Dark Chocolate Tart":{price:"৳ 520",desc:"A crisp cocoa shell filled with silky dark chocolate ganache, finished with sea salt and crème fraîche.",img:"https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1000&q=85"},"Vanilla Bean Panna Cotta":{price:"৳ 480",desc:"A delicate vanilla bean panna cotta with seasonal fruit and a light berry compote.",img:"https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1000&q=85"}};
+function showDish(name){const d=dishes[name];if(!d)return;$('#dishModal img').src=d.img;$('#dishModal h2').textContent=name;$('#dishModal .modal-price').textContent=d.price;$('#dishModal .modal-desc').textContent=d.desc;$('#dishModal').classList.add('open')}
+$$('[data-dish]').forEach(el=>el.addEventListener('click',()=>showDish(el.dataset.dish)));$('#dishClose')?.addEventListener('click',()=>$('#dishModal').classList.remove('open'));$('#dishModal')?.addEventListener('click',e=>{if(e.target.id==='dishModal')e.currentTarget.classList.remove('open')});
+// Gallery lightbox
+$$('[data-lightbox]').forEach(img=>img.addEventListener('click',()=>{const box=$('#lightbox');$('img',box).src=img.src;box.classList.add('open')}));$('#lightbox')?.addEventListener('click',()=>$('#lightbox').classList.remove('open'));
+// Demo reservation form
+$('#reservationForm')?.addEventListener('submit',e=>{e.preventDefault();$('#toast').textContent='Thank you! This is a demo reservation request — no booking has been sent.';$('#toast').classList.add('show');e.target.reset();setTimeout(()=>$('#toast').classList.remove('show'),5000)});
+$('#contactForm')?.addEventListener('submit',e=>{e.preventDefault();$('#toast').textContent='Thanks for reaching out. This demo form does not send messages.';$('#toast').classList.add('show');e.target.reset();setTimeout(()=>$('#toast').classList.remove('show'),4500)});
